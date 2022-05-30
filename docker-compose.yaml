@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mysqldb:
+    image: "mysql"
+    environment:
+      - MYSQL_DATABASE=backendfinal
+      - MYSQL_ROOT_PASSWORD=nikpan123
+  api:
+    build: "BackendFinalProject"
+    ports:
+      - "8088:8088"
+    restart: unless-stopped
+
+  frontend:
+    build: "FrontendFinalProject"
+    ports:
+      - "9002:9002"
+    restart: unless-stopped
+  rabbitmq:
+   image: "rabbitmq:3-management"
+   ports:
+    - "5672:5672"
+    - "127.0.0.1:15672:15672"
+
+  rabbitworker:
+    build: "spring-rabbitmq-consumer"
+    environment:
+      rabbit_host: "rabbitmq"
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
